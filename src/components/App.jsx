@@ -5,7 +5,7 @@ import { ContactList } from "components/ContactList/ContactList";
 import { Filter } from "components/ContactList/Filter";
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(() => {return JSON.parse(localStorage.getItem("contacts")) ?? []});
   const [filter, setFilter] = useState("");
 
   const handleSubmit = data => { 
@@ -41,21 +41,11 @@ export const App = () => {
       return updatedContacts;
     });
   };
-
-  useEffect(
-    () => { 
-      const storedContacts = JSON.parse(localStorage.getItem("contacts"));
-      if (storedContacts) {
-        setContacts(storedContacts);
-      }
-    }, []);
   
   useEffect(
     () => { 
       localStorage.setItem("contacts", JSON.stringify(contacts));
     }, [contacts]);
-
-  const filtredContacts = getfiltredContacts();
 
   return (
     <Wrapper>
@@ -70,7 +60,7 @@ export const App = () => {
         onFiltre={handlFiltre}
       />
       <ContactList
-        contacts={filtredContacts}
+        contacts={getfiltredContacts()}
         onDelete={handleDelete}
       />
     </Wrapper>
